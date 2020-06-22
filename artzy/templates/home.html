@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+Welcome to artzyyyahtzeeey
+<div id='posts'>
+<script>
+    
+    const postsElem = document.getElementById("posts")
+    //gestore json    
+    const xhr = new XMLHttpRequest()
+    const method = 'GET'
+    const url = "/posts"
+    const responseType = "json"
+    xhr.responseType = responseType
+    xhr.open(method, url)
+    xhr.onload = function(){
+        //get list from response
+        const serverResponse = xhr.response
+        const listedItems = serverResponse.response
+        var finalPostStr = "<div class='mb-4'>"
+        
+        var i;
+        for (i = 0; i < listedItems.length; i++){
+            var cur = "<h3>" + listedItems[i].id + " " +
+                     listedItems[i].description +  " " +
+                     listedItems[i].like_count +  " " +
+                     listedItems[i].author_id +  " " +
+                "</h3><br>"
+            
+            finalPostStr += cur                    
+        }
+        finalPostStr =+ "</div>"
+        postsElem.innerHTML += finalPostStr
+        }
+    xhr.send()
+</script>
+</div>
+{% endblock content %}
