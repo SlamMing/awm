@@ -1,9 +1,25 @@
 {% extends 'base.html' %}
 {% block content %}
-Welcome to artzyyyahtzeeey
-<div id='posts'>
+<div class='row'>
+    <div class='col-md-4 mx-auto col-10'>
+        <form class='form' method='POST' action='/create-post'>
+            {% csrf_token %}
+        <input type='hidden' value='/' name='next' />
+        <textarea class='form-control' name='description' placeholder='Your post'></textarea>
+        <button type ='submit' class='btn btn-primary'>Post</button>
+        </form>
+    </div>
+</div>
+<div class='row text-center' id='posts'>
 <script>
-    
+    function handleLike(post_id, cCount){
+        cCount++
+        return
+    }
+    function likeButt(post) {
+        return "<button class='btn btn-primary btn-sm' onclick=handleLike("
+         + post.id +"," + post.like_count +")>" + post.like_count + "Likes</button>"
+    }
     const postsElem = document.getElementById("posts")
     //gestore json    
     const xhr = new XMLHttpRequest()
@@ -16,20 +32,24 @@ Welcome to artzyyyahtzeeey
         //get list from response
         const serverResponse = xhr.response
         const listedItems = serverResponse.response
-        var finalPostStr = "<div class='mb-4'>"
-        
+        var header = "<div class='mb-4 col-12 col-md-10 mx-auto border rounded py-3'>"
+        var finalPostStr = ""
         var i;
         for (i = 0; i < listedItems.length; i++){
-            var cur = "<h3>" + listedItems[i].id + " " +
-                     listedItems[i].description +  " " +
-                     listedItems[i].like_count +  " " +
-                     listedItems[i].author_id +  " " +
+            post = listedItems[i]
+            finalPostStr += header
+            var cur = "<h3>" + post.id + " " +
+                post.description +  " " +
+                post.like_count +  " " +
+                post.author_id +  " " +
                 "</h3><br>"
             
-            finalPostStr += cur                    
+            finalPostStr += cur
+            finalPostStr += likeButt(post)
+            finalPostStr += "</div>"     
         }
-        finalPostStr =+ "</div>"
-        postsElem.innerHTML += finalPostStr
+        
+        postsElem.innerHTML = finalPostStr
         }
     xhr.send()
 </script>

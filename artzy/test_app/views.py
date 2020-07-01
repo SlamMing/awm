@@ -1,9 +1,18 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from .models import Post
+from .forms import PostForm
 # Create your views here.
 def homepage(request, *args, **kwargs):
     return render(request, 'home.html', context={})
+
+def createPost(request, *args, **kwargs):
+    form = PostForm(request.POST or None)
+    if form.is_valid():
+        obj = form.save(commit=False)
+        obj.save()
+        form = PostForm()
+    return render(request, 'components/forms.html', context ={"form" : form})
 def getPosts(request, *args, **kwargs):
     #get every post
     posts = Post.objects.all()
