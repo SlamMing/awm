@@ -26,8 +26,8 @@ SECRET_KEY = 'jh%)))_dp7ie(p+w55!dps!9)72_6ue6aqon+oa$2+!8hszc=i'
 DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1']
-
-
+LOGIN_URL = "/login"
+MAX_POST_LENGTH = 240
 # Application definition
 
 INSTALLED_APPS = [
@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    #third party
+    'rest_framework',
+    #internal
     'test_app',
 ]
 

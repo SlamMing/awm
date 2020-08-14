@@ -20,7 +20,7 @@ from test_app.views import getPostbyId, homepage, getPosts, createPost
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('posts/<int:tweet_id>', getPostbyId), 
+    path('posts/<int:post_id>', getPostbyId), 
     path('create-post', createPost), 
     path('posts', getPosts),
     path('', homepage),

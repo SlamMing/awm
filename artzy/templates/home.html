@@ -4,9 +4,10 @@
     <div class='col-md-4 mx-auto col-10'>
         <form class='form' id='post-create-form' method='POST' action='/create-post'>
             {% csrf_token %}
+            <div class='d-none alert alert-danger' id='post-create-error'></div>
         <input type='hidden' value='/' name='next' />
-        <textarea class='form-control' name='description' placeholder='Painting description'></textarea>
-        <button type ='submit' class='btn btn-primary'>Post</button>
+        <textarea required='required' class='form-control' name='description' placeholder='Painting description'></textarea>
+        <button type ='submit' class='btn btn-primary' >Post</button>
         </form>
     </div>
 </div>
@@ -23,20 +24,80 @@
     }
 </script>
 <script>
+    function handlePostFormError(msg, display) {
+        var errorDiv = document.getElementById("post-create-error")
+        if(display===true){
+                errorDiv.setAttribute("class", "alert alert-danger")
+                errorDiv.innerHTML = msg
+        }else {
+                errorDiv.setAttribute("class", "d-none alert alert-danger")
+        }
+    }
     function handlePostCreateSubmit(event){
+        
         event.preventDefault()
         //retrieve form
         const form = event.target
         const fd = new FormData(form)
-        for(var item of fd.entries()){
-            console.log(item)
+        const url = form.getAttribute("action")
+        const method = form.getAttribute("method")
+        const xhr = new XMLHttpRequest()
+        xhr.open(method, url)
+        xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
+        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+        //xh response to submit post
+        xhr.onload = function(){
+            if (xhr.status === 201) {
+                handlePostFormError("", false)
+                const serverResponse = xhr.response
+                newTweetElem = formatPostEl(serverResponse)
+                const postsElem = document.getElementById("posts")
+                const ogHtml = postsElem.innerHTML
+                postsElem.innerHTML = newTweetElem + ogHtml
+                loadPosts(postsElem)
+                form.reset()
+            }else if (xhr.status === 400){
+                const errorJson = xhr.response
+                const description = JSON.parse(errorJson)
+                let contentMsg;
+                if(description){
+                    contentMsg = description['description']
+                    if (contentMsg) {
+                        handlePostFormError(contentMsg, true)
+                    } else{
+                    alert("An error occured. Please try again.")
+                }
+                } else{
+                    alert("An error occured. Please try again.")
+                }
+               
+                
+            }else if (xhr.status === 500){
+                alert("Server Error")
+            }else if (xhr.status === 401){
+                alert("You must login to post!")
+                window.location.href("/login")
+            }
         }
-        console.log(event)
+        xhr.onerror = function() {
+            alert("ERRORE MADORNALE")
+        }
+        xhr.send(fd)
     }
     const postCreateElem = document.getElementById("post-create-form")
     postCreateElem.addEventListener("submit", handlePostCreateSubmit)
     const postsElem = document.getElementById("posts")
-
+    function formatPostEl(post){
+        var ret = "<div class='mb-4 col-12 col-md-10 mx-auto border rounded py-3'>"
+        ret += "<h3>" + //+ post.id + " " +
+                    post.description +  " " +
+                    //post.like_count +  " " +
+                    //post.author_id +  " " +
+                    "</h3>"
+        ret += likeButt(post)
+        ret += "</div>"
+        return ret
+    }
     //function to display posts, updates on load
     function loadPosts() {
         const xhr = new XMLHttpRequest()
@@ -48,28 +109,22 @@
         xhr.onload = function(){
             //get list from response
             const serverResponse = xhr.response
-            const listedItems = serverResponse.response
-            var header = "<div class='mb-4 col-12 col-md-10 mx-auto border rounded py-3'>"
+            
+            const listedItems = serverResponse
             var finalPostStr = ""
             var i;
             for (i = 0; i < listedItems.length; i++){
                 post = listedItems[i]
-                finalPostStr += header
-                var cur = "<h3>" + //+ post.id + " " +
-                    post.description +  " " +
-                    //post.like_count +  " " +
-                    //post.author_id +  " " +
-                    "</h3>"
                 
-                finalPostStr += cur
-                finalPostStr += likeButt(post)
-                finalPostStr += "</div>"     
+                var cur = formatPostEl(post)
+                finalPostStr += cur     
             }
             
             postsElem.innerHTML = finalPostStr
             }
         xhr.send()
         }
+    
     loadPosts(postsElem)
 
     
