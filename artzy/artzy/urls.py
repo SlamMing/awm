@@ -15,13 +15,21 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from test_app.views import getPostbyId, homepage, getPosts, createPost
+from test_app.views import (
+    getPostbyId,
+    homepage,
+    getPosts,
+    createPost,
+    deletePost,
+    PostAction)
 #from django.conf.urls import include, url
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('posts/<int:post_id>', getPostbyId), 
-    path('create-post', createPost), 
+    path('api/posts/<int:post_id>/delete', deletePost),
+    path('api/posts/action', PostAction),
+    path('posts/<int:post_id>', getPostbyId),
+    path('create-post', createPost),
     path('posts', getPosts),
     path('', homepage),
     #url(r'', include('test_app.urls')),

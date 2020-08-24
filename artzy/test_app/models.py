@@ -3,11 +3,16 @@ from django.conf import settings
 import datetime
 User = settings.AUTH_USER_MODEL
 # Create your models here.
+class PostLike(models.Model):
+    user = models.ForeignKey(User,  on_delete=models.CASCADE)
+    post = models.ForeignKey("Post",  on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
 class Post(models.Model):
     description = models.TextField(blank=True)
     painting = models.FileField(upload_to='image/', blank=True)
-    like_count = models.IntegerField(default=1)
-    author_id = models.ForeignKey(User,  on_delete=models.CASCADE)
+    likes = models.ManyToManyField(User, related_name="post_author", blank=True, through=PostLike)
+    author = models.ForeignKey(User,  on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
     #pub_date = models.DateTimeField(auto_now_add=True, default=datetime.datetime.now())
     comments = []
     def __str__(self):
@@ -17,12 +22,12 @@ class Post(models.Model):
     def serialize(self):
         return {
                     "description": self.description,
-                    "author_id": self.author_id.id,
-                    "like_count": self.like_count
+                    "author": self.author.id,
+                    
                 }
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     content = models.TextField(blank=True)
-    author_id = models.IntegerField(default=-1)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     #pub_date = models.DateTimeField(auto_now_add=True, default=datetime.datetime.now())

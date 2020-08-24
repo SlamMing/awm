@@ -13,14 +13,54 @@
 </div>
 <div class='row text-center' id='posts'>
 <script>
-    function handleLike(post_id, cCount){
-        cCount++
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              // Does this cookie string begin with the name we want?
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+
+    function handleActionBtn(post_id, cCount, act){
+        const csrftoken = getCookie('csrftoken');
+        const url = "/api/posts/action"
+        const method = "POST"
+        const data = JSON.stringify({
+          id: post_id,
+          action: act
+        })
+        const xhr = new XMLHttpRequest()
+        xhr.open(method, url)
+        xhr.setRequestHeader("Content-Type", "application/json")
+        xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
+        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+        xhr.setRequestHeader("X-CSRFToken", csrftoken)
+        xhr.onload = function() {
+          console.log(xhr.status, xhr.response)
+          loadPosts()
+        }
+        xhr.send(data)
         return
     }
-
+    function shareButt(post) {
+        return "<button class='btn btn-outline-success btn-sm' onclick=handleActionBtn("
+         + post.id +"," + post.likes +",'share')>Share</button>"
+    }
+    function unlikeButt(post) {
+        return "<button class='btn btn-outline-primary btn-sm' onclick=handleActionBtn("
+         + post.id +"," + post.likes +",'unlike')>Unlike</button>"
+    }
     function likeButt(post) {
-        return "<button class='btn btn-primary btn-sm' onclick=handleLike("
-         + post.id +"," + post.like_count +")>" + post.like_count + "Likes</button>"
+        return "<button class='btn btn-primary btn-sm' onclick=handleActionBtn("
+         + post.id +"," + post.likes +",'like')>" + post.likes + " Likes</button>"
     }
 </script>
 <script>
@@ -34,7 +74,7 @@
         }
     }
     function handlePostCreateSubmit(event){
-        
+
         event.preventDefault()
         //retrieve form
         const form = event.target
@@ -70,11 +110,11 @@
                 } else{
                     alert("An error occured. Please try again.")
                 }
-               
-                
+
+
             }else if (xhr.status === 500){
                 alert("Server Error")
-            }else if (xhr.status === 401){
+            }else if (xhr.status === 401 || xhr.status === 403){
                 alert("You must login to post!")
                 window.location.href("/login")
             }
@@ -89,13 +129,13 @@
     const postsElem = document.getElementById("posts")
     function formatPostEl(post){
         var ret = "<div class='mb-4 col-12 col-md-10 mx-auto border rounded py-3'>"
-        ret += "<h3>" + //+ post.id + " " +
+        ret += "<p><h3>" + //+ post.id + " " +
                     post.description +  " " +
                     //post.like_count +  " " +
                     //post.author_id +  " " +
-                    "</h3>"
-        ret += likeButt(post)
-        ret += "</div>"
+                    "</h3></p>"
+        ret += "<div class='btn-group'>" + likeButt(post) + unlikeButt(post) + shareButt(post)
+        ret += "</div></div>"
         return ret
     }
     //function to display posts, updates on load
@@ -109,25 +149,25 @@
         xhr.onload = function(){
             //get list from response
             const serverResponse = xhr.response
-            
+
             const listedItems = serverResponse
             var finalPostStr = ""
             var i;
             for (i = 0; i < listedItems.length; i++){
                 post = listedItems[i]
-                
+
                 var cur = formatPostEl(post)
-                finalPostStr += cur     
+                finalPostStr += cur
             }
-            
+
             postsElem.innerHTML = finalPostStr
             }
         xhr.send()
         }
-    
+
     loadPosts(postsElem)
 
-    
+
 </script>
 </div>
 {% endblock content %}
