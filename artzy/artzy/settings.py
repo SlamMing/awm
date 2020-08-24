@@ -25,7 +25,7 @@ SECRET_KEY = 'jh%)))_dp7ie(p+w55!dps!9)72_6ue6aqon+oa$2+!8hszc=i'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 LOGIN_URL = "/login"
 MAX_POST_LENGTH = 240
 POST_ACTION_OPTIONS = ["like", "unlike", "share"]
@@ -40,11 +40,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #third party
     'rest_framework',
+    'corsheaders',
     #internal
     'test_app',
+
+
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -121,6 +125,9 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
+CORS_ORIGIN_ALLOW_ALL = True
+#allow any urls that match this regex
+CORS_URLS_REGEX = r'^/api/.*$'
 
 STATIC_URL = '/static/'
 DEFAULT_RENDERER_CLASSES = [

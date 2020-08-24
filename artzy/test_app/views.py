@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from django.conf import settings
 from .models import Post
 from .forms import PostForm
-from .serializers import PostSerializer, PostActionSerializer
+from .serializers import PostSerializer, PostActionSerializer, PostCreateSerializer
 
 ALLOWED_HOSTS = settings.ALLOWED_HOSTS
 
@@ -19,7 +19,7 @@ def homepage(request, *args, **kwargs):
 #@authentication_classes([SessionAuthentication]) # this is done by default
 @permission_classes([IsAuthenticated]) #rest api for authentication
 def createPost(request, *args, **kwargs):
-    serializer = PostSerializer(data = request.POST)
+    serializer = PostCreateSerializer(data = request.POST)
 
     if serializer.is_valid(raise_exception = True):
         serializer.save(author=request.user)
@@ -49,7 +49,7 @@ def PostAction(request, *args, **kwargs):
         data = serializer.validated_data
         post_id= data.get("id")
         action = data.get("action")
-
+        desc = data.get("description")
         qs = Post.objects.filter(id=post_id)
         if not qs.exists():
             return Response({}, status=404)
@@ -60,9 +60,12 @@ def PostAction(request, *args, **kwargs):
             return Response(serializer.data, status=200)
         elif action =="unlike":
             obj.likes.remove(request.user)
+            serializer = PostSerializer(obj)
+            return Response(serializer.data, status=200)
         elif action == "share":
-            #todo
-            pass
+            new_post = Post.objects.create(author=request.user, parent=obj, description=desc)
+            serializer = PostSerializer(new_post)
+            return Response(serializer.data, status=200)
 
     return Response({}, status=200)
 

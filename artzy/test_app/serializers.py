@@ -7,13 +7,15 @@ POST_ACTION_OPTIONS = settings.POST_ACTION_OPTIONS
 class PostActionSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     action = serializers.CharField()
-
+    description = serializers.CharField(allow_blank=True, required=False)
     def validate_action(self, value):
         value = value.lower().strip()
         if not value in POST_ACTION_OPTIONS:
             raise serializers.ValidationError("this is not a valid action for posts")
         return value
-class PostSerializer(serializers.ModelSerializer):
+
+#create serializer
+class PostCreateSerializer(serializers.ModelSerializer):
     likes = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model=Post
@@ -24,3 +26,13 @@ class PostSerializer(serializers.ModelSerializer):
         if len(value) > MAX_LENGTH:
             raise serializers.ValidationError("description is too long! keep it simple.")
         return value
+
+#read_only serializer
+class PostSerializer(serializers.ModelSerializer):
+    likes = serializers.SerializerMethodField(read_only=True)
+    parent = PostCreateSerializer(read_only=True)
+    class Meta:
+        model=Post
+        fields=['id', 'description', 'likes', 'is_repost', 'parent']
+    def get_likes(self, obj):
+        return obj.likes.count()
