@@ -1,7 +1,8 @@
-import {ActionButt, Post, PostsList} from './components'
+import {ActionButt, Post, PostsList, PostsComponent} from './components'
 
 export {
   ActionButt,
   Post,
-  PostsList
+  PostsList,
+  PostsComponent
 }

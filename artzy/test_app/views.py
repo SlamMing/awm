@@ -19,7 +19,7 @@ def homepage(request, *args, **kwargs):
 #@authentication_classes([SessionAuthentication]) # this is done by default
 @permission_classes([IsAuthenticated]) #rest api for authentication
 def createPost(request, *args, **kwargs):
-    serializer = PostCreateSerializer(data = request.POST)
+    serializer = PostCreateSerializer(data = request.data)
 
     if serializer.is_valid(raise_exception = True):
         serializer.save(author=request.user)
