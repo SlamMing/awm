@@ -1,10 +1,14 @@
 import React, {useEffect, useState} from 'react'
-import {loadPosts, createPost} from '../lookup'
+import {  apiPostAction,
+          apiPostCreate,
+          apiPostsList} from './lookup'
 
 export function PostsComponent(props){
   const textAreaRef = React.createRef()
   const [newPosts, setNewPosts] = useState([])
+  
   const handleBackendUpdate = (response, status)=>{
+  // backend api response
     let tempNewPosts = [...newPosts]
     if (status===201){
       tempNewPosts.unshift(response)
@@ -14,15 +18,14 @@ export function PostsComponent(props){
       alert("An error occured sir")
     }
   }
+
   const handleSubmit = (event) => {
     event.preventDefault()
     const newVal = textAreaRef.current.value
-    
-    createPost(newVal, handleBackendUpdate)
-   
-    
+    apiPostCreate(newVal, handleBackendUpdate)
     textAreaRef.current.value = ''
   }
+
   return <div className={props.className}>
     <div className='col-12 mb-3'>
     <form onSubmit={handleSubmit}>
@@ -53,7 +56,7 @@ export function PostsList(props){
             setPostsDidSet(true)
       }
     }
-    loadPosts(myCallback)
+    apiPostsList(myCallback)
   }
   }, [postsDidSet, setPostsDidSet, postsInit]) //dependencies
   return posts.map((item, index)=>{
@@ -66,33 +69,43 @@ export function PostsList(props){
 export function ActionButt(props) {
 const {post, action} = props
 const [likes, setLikes] = useState(post.likes ? post.likes : 0)
-const [userLike, setUserLike] = useState(post.userLike === true ? true : false)
+//const [userLike, setUserLike] = useState(post.userLike === true ? true : false)
 const className = props.className ? props.className : 'btn btn-primary btn-sm'
 const actionDisplay = action.display ? action.display : 'Action'
 const display = action.type === 'like'  ? `${likes} ${actionDisplay}` : actionDisplay
+const handleActionBackendEvent = (response, status)=>{
+  console.log(response)
+  if (action.type === 'like'){
+    if (status === 200){
+      setLikes(response.likes)
+    }
+  }
+}
 const handleClick = (event) => {
   event.preventDefault()
-  if (action.type === 'like'){
-    if(userLike === true){
-      console.log(likes)
-      setLikes(likes - 1)
-      setUserLike(false)
-    }else{
-      console.log(likes)
-      setLikes(likes + 1)
-      setUserLike(true)
-    }
-
-  }
+  apiPostAction(post.id, action.type, handleActionBackendEvent)
+ 
 }
 return <button className={className} onClick={handleClick}>{display}</button>
 }
-
+export function ParentPost(props){
+const {post} = props
+  return post.parent ? <div className='row'>
+  <div className='col-11 mx-auto p-3 border rounded'>
+  <p className='mb-0 text-muted small'>Shared</p>
+   <Post className= {' '} post={post.parent} />
+   </div>
+   </div> : null 
+}
 export function Post(props) {
 const {post} = props
 const className = props.className ? props.className : 'col-10 mx-auto col-md-6'
 return <div className={className}>
+<div>
 <p> { post.description } </p>
+<ParentPost post={post} />
+  </div>  
+
 <div className='btn btn-group'>
 <ActionButt post={post} action={{type:"like", display:"Likes"}}/>
 <ActionButt post={post} action={{type:"unlike", display:"Dislike"}}/>

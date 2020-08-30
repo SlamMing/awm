@@ -50,6 +50,7 @@ def PostAction(request, *args, **kwargs):
         post_id= data.get("id")
         action = data.get("action")
         desc = data.get("description")
+        print(action.type)
         qs = Post.objects.filter(id=post_id)
         if not qs.exists():
             return Response({}, status=404)
