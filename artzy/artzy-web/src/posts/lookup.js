@@ -8,7 +8,14 @@ export function apiPostAction(postId, action, callback) {
     backendLookup("POST", "/posts/action/", callback, data)
 
 }
+export function apiPostsbyid(postID, callback) {
+    backendLookup("GET", `/posts/${postID}/`, callback)
+}
 
-export function apiPostsList(callback) {
-    backendLookup("GET", "/posts/", callback)
+export function apiPostsList(username, callback) {
+    let endpoint ="/posts/"
+    if (username){
+        endpoint = `/posts/?username=${username}`
+    }
+    backendLookup("GET", endpoint, callback)
 }

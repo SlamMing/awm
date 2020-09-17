@@ -12,7 +12,7 @@ class Post(models.Model):
     description = models.TextField(blank=True, null=True)
     painting = models.FileField(upload_to='image/', blank=True)
     likes = models.ManyToManyField(User, related_name="post_author", blank=True, through=PostLike)
-    author = models.ForeignKey(User,  on_delete=models.CASCADE)
+    author = models.ForeignKey(User,  on_delete=models.CASCADE, related_name="posts")
     timestamp = models.DateTimeField(auto_now_add=True)
     #pub_date = models.DateTimeField(auto_now_add=True, default=datetime.datetime.now())
     comments = []

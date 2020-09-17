@@ -14,31 +14,32 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
+from accounts.views import (
+    login_view,
+    logout_view,
+    register_view
+)
 from test_app.views import (
-    getPostbyId,
-    homepage,
-    getPosts,
-    createPost,
-    deletePost,
-    PostAction)
+    post_detail_view,
+    post_list_view,
+    )
 #from django.conf.urls import include, url
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    ##path('api/posts/<int:post_id>/delete', deletePost),
-    #path('api/posts/action', PostAction),
-    path('react/', TemplateView.as_view(template_name='react_via_dj.html')),
-    path('api/posts/', include('test_app.urls')),
-    path('posts/<int:post_id>', getPostbyId),
-    path('create-post', createPost),
-    path('posts', getPosts),
-    path('', homepage),
-    #url(r'', include('test_app.urls')),
-]
+    path('', post_list_view),
+    path('login/', login_view),
+    path('logout/', logout_view),
+    path('register/', register_view),
+    path('<int:post_id>', post_detail_view),
+    re_path(r'profiles?/', include('profiles.urls')),
+    re_path(r'api/profiles?/', include('profiles.api.urls')),
+    path('api/posts/', include('test_app.api.urls'))
+    ]
 
 if settings.DEBUG:
     urlpatterns +=  static(settings.STATIC_URL, 

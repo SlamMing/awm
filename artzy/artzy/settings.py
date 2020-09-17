@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'corsheaders',
     #internal
     'test_app',
+    'accounts',
+    'profiles',
 
 
 ]
