@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react'
-import {apiPostsList} from './lookup'
+import {apiPostFeed} from './lookup'
 import {Post} from './detail'
 
-export function PostsList(props){
+export function FeedList(props){
     const [postsInit, setPostsInit] = useState([])
     const [posts, setPosts] = useState([])
     const [nextUrl, setNextUrl] = useState(null)
@@ -24,9 +24,9 @@ export function PostsList(props){
               setPostsDidSet(true)
         } 
       }
-      apiPostsList(props.username, handlePostsListLookup)
+      apiPostFeed(handlePostsListLookup)
     }
-    }, [postsDidSet, setPostsDidSet, postsInit, props.username]) //dependencies
+    }, [postsDidSet, setPostsDidSet, postsInit]) //dependencies
     
     const handleDidShare = (newPost)=>{
   
@@ -47,9 +47,9 @@ export function PostsList(props){
             const newPosts = [...posts].concat(response.results)
             setPostsInit(newPosts)
             setPosts(newPosts)
-          }
+          } 
         }
-        apiPostsList(props.username, handleLoadNextResponse, nextUrl)
+        apiPostFeed(handleLoadNextResponse, nextUrl)
       }
     }
     return <React.Fragment>{posts.map((item, index)=>{

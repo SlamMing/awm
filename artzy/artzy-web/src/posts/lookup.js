@@ -12,10 +12,20 @@ export function apiPostsbyid(postID, callback) {
     backendLookup("GET", `/posts/${postID}/`, callback)
 }
 
-export function apiPostsList(username, callback) {
+export function apiPostsList(username, callback, nextUrl) {
     let endpoint ="/posts/"
     if (username){
         endpoint = `/posts/?username=${username}`
+    }
+    if (nextUrl !== null && nextUrl !== undefined) {
+        endpoint = nextUrl.replace("http://localhost:8000/api", "") // da cambiare in production
+    }
+    backendLookup("GET", endpoint, callback)
+}
+export function apiPostFeed(callback, nextUrl) {
+    let endpoint ="/posts/feed/"
+    if (nextUrl !== null && nextUrl !== undefined) {
+        endpoint = nextUrl.replace("http://localhost:8000/api", "") // da cambiare in production
     }
     backendLookup("GET", endpoint, callback)
 }

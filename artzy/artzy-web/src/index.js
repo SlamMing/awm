@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import {PostsComponent, PostbyidComponent} from './posts'
+import {ProfileBadgeComponent} from './profiles'
+import {FeedComponent, PostsComponent, PostbyidComponent} from './posts'
 
 const appEl = document.getElementById('root')
 if (appEl) {
@@ -23,11 +24,28 @@ if (postsEl) {
     postsEl
   );
 }
+const postsFeedEl = document.getElementById("artzy-feed")
+
+if (postsFeedEl) {
+  ReactDOM.render(
+    e(FeedComponent, postsFeedEl.dataset),
+    postsFeedEl
+  );
+}
 
 const postDetailElements = document.querySelectorAll(".artzy-detail")
 postDetailElements.forEach(container => {
   ReactDOM.render(
     e(PostbyidComponent, container.dataset),
+    container
+  );
+})
+
+
+const userProfileBadgeElements = document.querySelectorAll(".artzy-profile-badge")
+userProfileBadgeElements.forEach(container => {
+  ReactDOM.render(
+    e(ProfileBadgeComponent, container.dataset),
     container
   );
 })

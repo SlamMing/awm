@@ -6,14 +6,10 @@ from django.conf import settings
 ALLOWED_HOSTS = settings.ALLOWED_HOSTS
 
 def homepage(request, *args, **kwargs):
-    username= None
-    if request.user.is_authenticated:
-        username = request.user.username
-    return render(request, 'pages/home.html', context={"username":username}, status = 200)
+    return render(request, 'pages/feed.html')
 
 def post_list_view(request, *args, **kwargs):
-    return render(request, 'posts/list.html')
+    return render(request, 'posts/list.html', {})
 
 def post_detail_view(request, post_id, *args, **kwargs):
-
     return render(request, 'posts/detail.html', context={"post_id": post_id})

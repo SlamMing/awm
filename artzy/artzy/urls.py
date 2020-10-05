@@ -26,12 +26,14 @@ from accounts.views import (
 from test_app.views import (
     post_detail_view,
     post_list_view,
+    homepage
     )
 #from django.conf.urls import include, url
 
 urlpatterns = [
+    path('', homepage),
     path('admin/', admin.site.urls),
-    path('', post_list_view),
+    path('global/', post_list_view),
     path('login/', login_view),
     path('logout/', logout_view),
     path('register/', register_view),
