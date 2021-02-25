@@ -20,7 +20,7 @@ const isDetail = `${post.id}` === `${urlPostId}`
 
 const handleLink = (event) => {
     event.preventDefault()
-    window.location.href = `${post.id}`
+    window.location.href = `http://localhost:8000/${post.id}`
 }
 
 const handlePerformAction = (newPostAction, status)=>{
@@ -42,6 +42,7 @@ return <div className={className}>
     <div className='col-11'>
     <AuthorDisplay includeFullName author={post.author}/>
 <div>
+{(isRepost || !post.parent) && <p> <iframe title="painting"  src={post.painting} style={{border:'none', width:'300px', height: '530px'}}> </iframe></p>}
 <p> {post && post.description } </p>
 
 <ParentPost post={post} reposter={post.author}/>

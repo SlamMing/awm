@@ -5,7 +5,7 @@ from .forms import ProfileForm
 
 def profile_update_view(request, *args, **kwargs):
     if not request.user.is_authenticated:
-        return redirect("/login?next=/profile/update")
+        return redirect("/login?next=/profile/edit")
     user = request.user
     user_data = {
         "first_name": user.first_name,

@@ -1,6 +1,7 @@
 import {backendLookup} from '../lookup'
-export function apiPostCreate(newPost, callback) {
-    backendLookup("POST", "/posts/create/", callback, {description: newPost})
+export function apiPostCreate(newPost, img, callback) {
+    const data = {description: newPost, painting: img}
+    backendLookup("POST", "/posts/create/", callback, data)
 
 }
 export function apiPostAction(postId, action, callback) {

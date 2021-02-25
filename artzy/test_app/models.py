@@ -4,6 +4,7 @@ from django.conf import settings
 import datetime
 
 User = settings.AUTH_USER_MODEL
+
 # Create your models here.
 class PostLike(models.Model):
     user = models.ForeignKey(User,  on_delete=models.CASCADE)
@@ -14,7 +15,7 @@ class PostQuerySet(models.QuerySet):
         return self.filter(author__username__iexact=username)
     def feed(self, user):
         profiles_exist = user.following.exists() 
-        profiles = user.following.all()
+        #profiles = user.following.all()
         followed_ids = []
         if profiles_exist:
             followed_ids = user.following.values_list("user__id", flat=True)
@@ -31,13 +32,13 @@ class PostManager(models.Manager):
 class Post(models.Model):
     parent = models.ForeignKey("self", null=True, on_delete=models.SET_NULL)
     description = models.TextField(blank=True, null=True)
-    painting = models.FileField(upload_to='image/', blank=True)
+    painting =  models.TextField(blank=True, null=True)
     likes = models.ManyToManyField(User, related_name="post_author", blank=True, through=PostLike)
     author = models.ForeignKey(User,  on_delete=models.CASCADE, related_name="posts")
     timestamp = models.DateTimeField(auto_now_add=True)
     #pub_date = models.DateTimeField(auto_now_add=True, default=datetime.datetime.now())
     objects = PostManager()
-    comments = []
+    
     def __str__(self):
         return self.description
     class Meta:

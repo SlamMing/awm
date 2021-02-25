@@ -28,6 +28,8 @@ DEBUG = True
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 LOGIN_URL = "/login"
 MAX_POST_LENGTH = 240
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 POST_ACTION_OPTIONS = ["like", "unlike", "share"]
 # Application definition
 
@@ -147,8 +149,8 @@ DEFAULT_RENDERER_CLASSES = [
         ]
 
 DEFAULT_AUTHENTICATION_CLASSES = [
-    'rest_framework.authentication.SessionAuthentication',
-    'rest_framework.authentication.BasicAuthentication',
+    #'rest_framework.authentication.SessionAuthentication',
+    #'rest_framework.authentication.BasicAuthentication',
 ]
 
 if DEBUG:

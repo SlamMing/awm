@@ -21,7 +21,7 @@ class PostCreateSerializer(serializers.ModelSerializer):
     likes = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model=Post
-        fields=['author', 'id',  'description', 'likes', 'timestamp']
+        fields=['author', 'id',  'description', 'painting', 'likes', 'timestamp']
     def get_likes(self, obj):
         return obj.likes.count()
     def validate_description(self, value):
@@ -36,7 +36,7 @@ class PostSerializer(serializers.ModelSerializer):
     parent = PostCreateSerializer(read_only=True)
     class Meta:
         model=Post
-        fields=['author', 'id',  'description', 'likes', 'is_repost', 'parent', 'timestamp']
+        fields=['author', 'id',  'description', 'painting', 'likes', 'is_repost', 'parent', 'timestamp']
     def get_likes(self, obj):
         return obj.likes.count()
     

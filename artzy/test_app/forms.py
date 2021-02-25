@@ -6,7 +6,7 @@ MAX_LENGTH = settings.MAX_POST_LENGTH
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['description']
+        fields = ['description', 'painting']
     def clean_description(self):
         description = self.cleaned_data.get("description")
         if len(description) > MAX_LENGTH:
