@@ -9,6 +9,7 @@ def login_view(request, *args, **kwargs):
     if form.is_valid():
         user_ = form.get_user()
         login(request, user_)
+        print(request.session._get_or_create_session_key())
         return redirect("/")
     context = { "form": form,
                 "btn_label": "login",

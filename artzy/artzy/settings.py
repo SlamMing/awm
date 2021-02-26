@@ -50,11 +50,11 @@ INSTALLED_APPS = [
 
 
 ]
-
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -149,15 +149,15 @@ DEFAULT_RENDERER_CLASSES = [
         ]
 
 DEFAULT_AUTHENTICATION_CLASSES = [
-    #'rest_framework.authentication.SessionAuthentication',
-    #'rest_framework.authentication.BasicAuthentication',
+    'rest_framework.authentication.SessionAuthentication',
+    'rest_framework.authentication.BasicAuthentication',
 ]
 
 if DEBUG:
     DEFAULT_RENDERER_CLASSES += ['rest_framework.renderers.BrowsableAPIRenderer']
-    DEFAULT_AUTHENTICATION_CLASSES += ['artzy.rest_api.dev.DevAuthentication']
+    #DEFAULT_AUTHENTICATION_CLASSES += ['artzy.rest_api.dev.DevAuthentication']
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES':DEFAULT_AUTHENTICATION_CLASSES,
     'DEFAULT_RENDERER_CLASSES':DEFAULT_RENDERER_CLASSES,
-    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated',]
+  #  'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated',]
 }

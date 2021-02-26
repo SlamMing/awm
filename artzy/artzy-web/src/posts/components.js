@@ -45,7 +45,6 @@ export function PostbyidComponent(props) {
   const [post, setPost] = useState(null)
   const handleBackendLookup= (response, status) => {
     if(status === 200){
-      console.log("wew")
       setPost(response)
     }else {
       alert("There was an error finding your post.")

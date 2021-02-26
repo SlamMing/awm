@@ -41,12 +41,16 @@ ALLOWED_HOSTS = settings.ALLOWED_HOSTS
 
 @api_view(['GET', 'POST'])
 def profile_detail_api_view(request, username, *args, **kwargs):
+    
     qs = Profile.objects.filter(user__username=username)
     if not qs.exists():
         return Response({"detail": "User not found"}, status=404)
     profile_obj = qs.first()
     data = request.data or {}
     if request.method == 'POST':
+        print(request.user)
+        if not request.user.is_authenticated:
+            return redirect('%s/?showLoginRequired=true' % (settings.LOGIN_URL))
         me = request.user
         action = data.get("action")
         if profile_obj.user != me:

@@ -109,6 +109,7 @@ def get_paginated_queryset_response(qs, request):
 @api_view(['GET'])
 #@permission_classes((IsAuthenticated,))
 def post_feed_view(request, *args, **kwargs):
+    print(request.session.session_key)
     if not request.user.is_authenticated:
         return redirect('%s/?showLoginRequired=true' % (settings.LOGIN_URL))
     user = request.user

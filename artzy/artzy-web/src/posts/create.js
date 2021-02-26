@@ -18,15 +18,24 @@ export function PostCreate(props){
   const handleSubmit = (event) => {
     event.preventDefault()
     const newVal = textAreaRef.current.value
-    let img = embedAreaRef.current.value
-    if(img.slice(-1) === "/"){
-      img = img + 'embed'
-    }else{
-      img = img + '/embed'
-    }
-    apiPostCreate(newVal, img, handleBackendUpdate)
-    textAreaRef.current.value = ''
+    var img = embedAreaRef.current.value
+    // eslint-disable-next-line
+    let rgx = new RegExp('(https?:\/\/(?:www\.)?instagram\.com\/p\/([^/?#&]+)).*')
+    if(rgx.test(img)){
+      if(img.slice(-1) === "/"){
+        img = img + 'embed'
+      }else{
+        img = img + '/embed'
+      }
+      apiPostCreate(newVal, img, handleBackendUpdate)
+      textAreaRef.current.value = ''
+      embedAreaRef.current.value = ''
+  }else{
+    alert("Invalid link, please use instagram post link")
     embedAreaRef.current.value = ''
+  }
+    
+    
   }
  
   return <div className={props.className}>

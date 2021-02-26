@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='post',
             name='painting',
-            field=models.ImageField(default='/Hearthstone_Screenshot_06-12-20_23.02.24.png', upload_to=test_app.models.upload_to, verbose_name='Painting'),
+            field=models.TextField(default='/Hearthstone_Screenshot_06-12-20_23.02.24.png'),
         ),
     ]
