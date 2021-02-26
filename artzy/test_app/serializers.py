@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from .models import Post
 from django.conf import settings
-from profiles.serializers import PublicProfileSerializer
 
 MAX_LENGTH = settings.MAX_POST_LENGTH
 POST_ACTION_OPTIONS = settings.POST_ACTION_OPTIONS
@@ -17,11 +16,14 @@ class PostActionSerializer(serializers.Serializer):
 
 #create serializer
 class PostCreateSerializer(serializers.ModelSerializer):
-    author = PublicProfileSerializer(source='author.profile', read_only=True)
     likes = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model=Post
+<<<<<<< HEAD
         fields=['author', 'id',  'description', 'painting', 'likes', 'timestamp']
+=======
+        fields=['id', 'description', 'likes']
+>>>>>>> parent of fb65804 (Even more functionalities)
     def get_likes(self, obj):
         return obj.likes.count()
     def validate_description(self, value):
@@ -31,12 +33,14 @@ class PostCreateSerializer(serializers.ModelSerializer):
 
 #read_only serializer
 class PostSerializer(serializers.ModelSerializer):
-    author = PublicProfileSerializer(source='author.profile', read_only=True)
     likes = serializers.SerializerMethodField(read_only=True)
     parent = PostCreateSerializer(read_only=True)
     class Meta:
         model=Post
+<<<<<<< HEAD
         fields=['author', 'id',  'description', 'painting', 'likes', 'is_repost', 'parent', 'timestamp']
+=======
+        fields=['id', 'description', 'likes', 'is_repost', 'parent']
+>>>>>>> parent of fb65804 (Even more functionalities)
     def get_likes(self, obj):
         return obj.likes.count()
-    

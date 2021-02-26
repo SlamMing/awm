@@ -137,20 +137,14 @@ STATIC_ROOT =  os.path.join(BASE_DIR, "static-ROOT")
 CORS_ORIGIN_ALLOW_ALL = True
 #allow any urls that match this regex
 CORS_URLS_REGEX = r'^/api/.*$'
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
-    "http://localhost:3000",
-    "http://127.0.0.1:3000"
-]
+
 STATIC_URL = '/static/'
 DEFAULT_RENDERER_CLASSES = [
         'rest_framework.renderers.JSONRenderer',
         ]
 
 DEFAULT_AUTHENTICATION_CLASSES = [
-    'rest_framework.authentication.SessionAuthentication',
-    'rest_framework.authentication.BasicAuthentication',
+    'rest_framework.authentication.SessionAuthentication'
 ]
 
 if DEBUG:
@@ -158,6 +152,10 @@ if DEBUG:
     #DEFAULT_AUTHENTICATION_CLASSES += ['artzy.rest_api.dev.DevAuthentication']
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES':DEFAULT_AUTHENTICATION_CLASSES,
+<<<<<<< HEAD
     'DEFAULT_RENDERER_CLASSES':DEFAULT_RENDERER_CLASSES,
   #  'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated',]
+=======
+    'DEFAULT_RENDERER_CLASSES':DEFAULT_RENDERER_CLASSES
+>>>>>>> parent of fb65804 (Even more functionalities)
 }

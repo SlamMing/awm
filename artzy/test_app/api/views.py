@@ -1,12 +1,15 @@
 from django.shortcuts import render, redirect
 from django.utils.http import is_safe_url
 from django.http import HttpResponse, JsonResponse, Http404
-from django.contrib.auth.decorators import login_required
-
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
+<<<<<<< HEAD
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import permissions
+=======
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.permissions import IsAuthenticated
+>>>>>>> parent of fb65804 (Even more functionalities)
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -21,11 +24,10 @@ ALLOWED_HOSTS = settings.ALLOWED_HOSTS
 
 @api_view(['POST']) #import selected html client
 #@authentication_classes([SessionAuthentication]) # this is done by default
-#@permission_classes([IsAuthenticated]) #rest api for authentication
+@permission_classes([IsAuthenticated]) #rest api for authentication
 def createPost(request, *args, **kwargs):
-    if not request.user.is_authenticated:
-        return redirect('%s/?showLoginRequired=true' % (settings.LOGIN_URL))
     serializer = PostCreateSerializer(data = request.data)
+
     if serializer.is_valid(raise_exception = True):
         serializer.save(author=request.user)
         return Response(serializer.data, status=201)
@@ -44,13 +46,11 @@ def getPostbyId(request, post_id, *args, **kwargs):
 
 
 @api_view(['POST'])
-#@permission_classes((IsAuthenticated,))
+@permission_classes([IsAuthenticated])
 def PostAction(request, *args, **kwargs):
     '''
     action options are like, unlike, share
     '''
-    if not request.user.is_authenticated:
-        return redirect('%s/?showLoginRequired=true' % (settings.LOGIN_URL))
     serializer = PostActionSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
         data = serializer.validated_data
@@ -63,10 +63,6 @@ def PostAction(request, *args, **kwargs):
         obj = qs.first()
         if action == "like":
             obj.likes.add(request.user)
-            '''
-            if obj.parent is not None:
-                
-            '''
             serializer = PostSerializer(obj)
             return Response(serializer.data, status=200)
         elif action =="unlike":
@@ -83,47 +79,48 @@ def PostAction(request, *args, **kwargs):
 
 
 @api_view(['DELETE', 'POST'])
-#@permission_classes((IsAuthenticated,))
+@permission_classes([IsAuthenticated])
 def deletePost(request, post_id, *args, **kwargs):
-    if not request.user.is_authenticated:
-        return redirect('%s/?showLoginRequired=true' % (settings.LOGIN_URL))
-    qs = Post.objects.filter(id=post_id)
-    if not qs.exists():
-        return Response({}, status=404)
-    qs = qs.filter(user = request.user)
-    if not qs.exists():
-        return Response({"message": "You cannot delete this post bro"}, status=401)
-    obj = qs.first()
-    obj.delete()
-    return Response({"message": "Post removed successfully."}, status=200)
+        qs = Post.objects.filter(id=post_id)
+        if not qs.exists():
+            return Response({}, status=404)
+        qs = qs.filter(user = request.user)
+        if not qs.exists():
+            return Response({"message": "You cannot delete this post bro"}, status=401)
+        obj = qs.first()
+        obj.delete()
+        serializer = PostSerializer(obj)
+        return Response({"message": "Post removed successfully."}, status=200)
 
-from django.db.models import Q #query with more than one filter
-
-def get_paginated_queryset_response(qs, request):
-    paginator = PageNumberPagination()
-    paginator.page_size = 20
-    paginated_qs = paginator.paginate_queryset(qs, request)
-    serializer = PostSerializer(paginated_qs, many=True, context={"request": request})
-    return paginator.get_paginated_response(serializer.data)
 
 @api_view(['GET'])
-#@permission_classes((IsAuthenticated,))
+@permission_classes([IsAuthenticated]) 
 def post_feed_view(request, *args, **kwargs):
+<<<<<<< HEAD
     print(request.session.session_key)
     if not request.user.is_authenticated:
         return redirect('%s/?showLoginRequired=true' % (settings.LOGIN_URL))
+=======
+>>>>>>> parent of fb65804 (Even more functionalities)
     user = request.user
-    qs = Post.objects.feed(user)
-    return get_paginated_queryset_response(qs, request)
+    profiles = user.following.all()
+    followed_ids = []
+    if profiles.exists():
+        followed_ids = [x.user.id for x in profiles]
+    followed_ids.append(user.id)
+    qs=Post.objects.filter(author__id__in=followed_ids).order_by("-timestamp")
+    serializer = PostSerializer(qs, many=True)
+    return Response(serializer.data)
 
 
 @api_view(['GET'])
 def getPosts(request, *args, **kwargs):
-    qs = Post.objects.all()
-    username = request.GET.get('username')
-    if username != None:
-        qs = qs.by_username(username)
-    return get_paginated_queryset_response(qs, request)
+     qs = Post.objects.all()
+     username = request.GET.get('username')
+     if username != None:
+         qs = qs.filter(author__username__iexact=username)
+     serializer = PostSerializer(qs, many=True)
+     return Response(serializer.data)
 
 
 
