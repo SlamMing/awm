@@ -8,7 +8,7 @@ class PostLikeAdmin(admin.TabularInline):
 class PostSearch(admin.ModelAdmin):
     inlines = [PostLikeAdmin]
     list_display = ['__str__', 'author_id']
-    search_fields = ['description', 'author__username', 'author__email']
+    search_fields = ['description', 'user__username', 'user__email']
     class Meta:
         model = Post
 # Register your models here.

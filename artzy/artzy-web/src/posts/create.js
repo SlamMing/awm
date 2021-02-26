@@ -11,6 +11,7 @@ export function PostCreate(props){
     if (status===201){
       didPost(response)
     }else{
+      console.log(response)
       alert("An error occured sir")
     }
   }
@@ -37,7 +38,7 @@ export function PostCreate(props){
     
     
   }
- 
+
   return <div className={props.className}>
           <form onSubmit={handleSubmit}>
           <textarea ref={textAreaRef} required={true} className='form-control' placeholder='Painting description' name='post'></textarea>

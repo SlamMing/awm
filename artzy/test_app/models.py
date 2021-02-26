@@ -1,8 +1,6 @@
 from django.db import models
-from django.db.models import Q
 from django.conf import settings
 import datetime
-
 User = settings.AUTH_USER_MODEL
 
 # Create your models here.
